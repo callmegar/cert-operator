@@ -87,7 +87,7 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 	if err != nil {
 		return microerror.Mask(err)
 	}
-
+	r.logger.Log("debug", key.ClusterID(customObject), "debug", "Organizations", customObject.Spec.Organizations, "ClusterComponent", customObject.Spec.ClusterComponent)
 	if !exists {
 		c := vaultrole.CreateConfig{
 			AllowBareDomains: key.AllowBareDomains(customObject),
