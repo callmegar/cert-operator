@@ -15,8 +15,8 @@ import (
 
 func (r *Resource) ApplyCreateChange(ctx context.Context, obj, createChange interface{}) error {
 	customObject, err := key.ToCustomObject(obj)
-	r.logger.Log("debug", fmt.Sprintf("####%s##CustomObject %s\n", customObject.Spec.Organizations))
-	r.logger.Log("debug", fmt.Sprintf("####%s##Orgs  %s\n", key.Organizations(customObject)))
+	r.logger.Log("debug", fmt.Sprintf("####%s##CustomObject %s\n", key.ClusterID(customObject), customObject.Spec.Organizations))
+	r.logger.Log("debug", fmt.Sprintf("####%s##Orgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -44,8 +44,8 @@ func (r *Resource) ApplyCreateChange(ctx context.Context, obj, createChange inte
 func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desiredState interface{}) (interface{}, error) {
 	customObject, err := key.ToCustomObject(obj)
 
-	r.logger.Log("debug", fmt.Sprintf("##%s##CustomObject %s\n", customObject.Spec.Organizations))
-	r.logger.Log("debug", fmt.Sprintf("##%s##COrgs  %s\n", key.Organizations(customObject)))
+	r.logger.Log("debug", fmt.Sprintf("##%s##CustomObject %s\n", key.ClusterID(customObject), customObject.Spec.Organizations))
+	r.logger.Log("debug", fmt.Sprintf("##%s##COrgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -104,8 +104,8 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 			Organizations:    key.Organizations(customObject),
 			TTL:              key.RoleTTL(customObject),
 		}
-		r.logger.Log("debug", fmt.Sprintf("###%s##c.Organizations %s\n", c.Organizations))
-		r.logger.Log("debug", fmt.Sprintf("###%s##Orgs  %s\n", key.Organizations(customObject)))
+		r.logger.Log("debug", fmt.Sprintf("###%s##c.Organizations %s\n", key.ClusterID(customObject), c.Organizations))
+		r.logger.Log("debug", fmt.Sprintf("###%s##Orgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 		err := r.vaultRole.Create(c)
 		if err != nil {
 			return microerror.Mask(err)
