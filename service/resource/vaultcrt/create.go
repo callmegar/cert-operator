@@ -87,6 +87,7 @@ func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desir
 
 func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) error {
 	r.logger.Log("debug", fmt.Sprintf("##1#%s##Orgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
+	fmt.Println("1", key.Organizations(customObject))
 	c := vaultrole.ExistsConfig{
 		ID:            key.ClusterID(customObject),
 		Organizations: key.Organizations(customObject),
@@ -95,6 +96,8 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 	if err != nil {
 		return microerror.Mask(err)
 	}
+
+	fmt.Println("2", key.Organizations(customObject))
 	r.logger.Log("debug", fmt.Sprintf("##2#%s##Orgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 
 	if !exists {

@@ -1,12 +1,15 @@
 package vaultrole
 
 import (
+	"fmt"
+
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/vaultrole/key"
 )
 
 func (r *VaultRole) Exists(config ExistsConfig) (bool, error) {
+	r.logger.Log(fmt.Sprintf("jgsqware 1 %s %s", config.ID, config.Organizations))
 	// Check if a PKI for the given cluster ID exists.
 	secret, err := r.vaultClient.Logical().List(key.ListRolesPath(config.ID))
 	if IsNoVaultHandlerDefined(err) {
@@ -27,11 +30,15 @@ func (r *VaultRole) Exists(config ExistsConfig) (bool, error) {
 		if list, ok := keys.([]interface{}); ok {
 			for _, k := range list {
 				if str, ok := k.(string); ok && str == key.RoleName(config.ID, config.Organizations) {
+
+					r.logger.Log(fmt.Sprintf("jgsqware 2 %s %s", config.ID, config.Organizations))
+
 					return true, nil
 				}
 			}
 		}
 	}
 
+	r.logger.Log(fmt.Sprintf("jgsqware 3 %s %s", config.ID, config.Organizations))
 	return false, nil
 }
