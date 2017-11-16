@@ -15,6 +15,8 @@ import (
 
 func (r *Resource) ApplyCreateChange(ctx context.Context, obj, createChange interface{}) error {
 	customObject, err := key.ToCustomObject(obj)
+	r.logger.Log("debug", fmt.Sprintf("####CustomObject %s\n", customObject.Spec.Organizations))
+	r.logger.Log("debug", fmt.Sprintf("####Orgs  %s\n", key.Organizations(customObject)))
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -41,8 +43,10 @@ func (r *Resource) ApplyCreateChange(ctx context.Context, obj, createChange inte
 
 func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desiredState interface{}) (interface{}, error) {
 	customObject, err := key.ToCustomObject(obj)
-	fmt.Printf("##CustomObject %s\n", customObject.Spec.Organizations)
-	fmt.Printf("##Orgs  %s\n", key.Organizations(customObject))
+
+	r.logger.Log("debug", fmt.Sprintf("##CustomObject %s\n", customObject.Spec.Organizations))
+	r.logger.Log("debug", fmt.Sprintf("##Orgs  %s\n", key.Organizations(customObject)))
+
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -82,8 +86,6 @@ func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desir
 }
 
 func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) error {
-	fmt.Printf("#CustomObject %s\n", customObject.Spec.Organizations)
-	fmt.Printf("#Orgs  %s\n", key.Organizations(customObject))
 	c := vaultrole.ExistsConfig{
 		ID:            key.ClusterID(customObject),
 		Organizations: key.Organizations(customObject),
@@ -92,7 +94,6 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	r.logger.Log("debug", key.ClusterID(customObject), "debug", "Organizations", customObject.Spec.Organizations, "ClusterComponent", customObject.Spec.ClusterComponent)
 
 	if !exists {
 		c := vaultrole.CreateConfig{
@@ -103,7 +104,8 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 			Organizations:    key.Organizations(customObject),
 			TTL:              key.RoleTTL(customObject),
 		}
-		fmt.Printf("c.Organizations %s\n", c.Organizations)
+		r.logger.Log("debug", fmt.Sprintf("###c.Organizations %s\n", c.Organizations))
+		r.logger.Log("debug", fmt.Sprintf("###Orgs  %s\n", key.Organizations(customObject)))
 		err := r.vaultRole.Create(c)
 		if err != nil {
 			return microerror.Mask(err)
