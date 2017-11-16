@@ -36,6 +36,7 @@ func IPSANs(customObject certificatetpr.CustomObject) []string {
 }
 
 func Organizations(customObject certificatetpr.CustomObject) []string {
+	fmt.Println("jgsqware--", customObject.Spec.Organizations)
 	return append(customObject.Spec.Organizations, customObject.Spec.ClusterComponent)
 }
 
