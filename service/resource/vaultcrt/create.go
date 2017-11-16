@@ -43,7 +43,6 @@ func (r *Resource) ApplyCreateChange(ctx context.Context, obj, createChange inte
 
 func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desiredState interface{}) (interface{}, error) {
 	customObject, err := key.ToCustomObject(obj)
-
 	r.logger.Log("debug", fmt.Sprintf("##%s##CustomObject %s\n", key.ClusterID(customObject), customObject.Spec.Organizations))
 	r.logger.Log("debug", fmt.Sprintf("##%s##COrgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 
@@ -59,6 +58,7 @@ func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desir
 		return nil, microerror.Mask(err)
 	}
 
+	r.logger.Log("debug", fmt.Sprintf("##3#%s##Orgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 	r.logger.Log("cluster", key.ClusterID(customObject), "debug", "finding out if the secret has to be created")
 
 	var secretToCreate *apiv1.Secret
@@ -86,6 +86,7 @@ func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desir
 }
 
 func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) error {
+	r.logger.Log("debug", fmt.Sprintf("##1#%s##Orgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 	c := vaultrole.ExistsConfig{
 		ID:            key.ClusterID(customObject),
 		Organizations: key.Organizations(customObject),
@@ -94,6 +95,7 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 	if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.Log("debug", fmt.Sprintf("##2#%s##Orgs  %s\n", key.ClusterID(customObject), key.Organizations(customObject)))
 
 	if !exists {
 		c := vaultrole.CreateConfig{
