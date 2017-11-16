@@ -92,6 +92,7 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 		ID:            key.ClusterID(customObject),
 		Organizations: key.Organizations(customObject),
 	}
+	fmt.Println("3", key.Organizations(customObject))
 	exists, err := r.vaultRole.Exists(c)
 	if err != nil {
 		return microerror.Mask(err)
