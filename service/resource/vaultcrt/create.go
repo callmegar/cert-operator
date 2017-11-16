@@ -2,6 +2,7 @@ package vaultcrt
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/certificatetpr"
 	"github.com/giantswarm/microerror"
@@ -40,6 +41,8 @@ func (r *Resource) ApplyCreateChange(ctx context.Context, obj, createChange inte
 
 func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desiredState interface{}) (interface{}, error) {
 	customObject, err := key.ToCustomObject(obj)
+	fmt.Printf("##CustomObject %s\n", customObject.Spec.Organizations)
+	fmt.Printf("##Orgs  %s\n", key.Organizations(customObject))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -79,6 +82,8 @@ func (r *Resource) newCreateChange(ctx context.Context, obj, currentState, desir
 }
 
 func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) error {
+	fmt.Printf("#CustomObject %s\n", customObject.Spec.Organizations)
+	fmt.Printf("#Orgs  %s\n", key.Organizations(customObject))
 	c := vaultrole.ExistsConfig{
 		ID:            key.ClusterID(customObject),
 		Organizations: key.Organizations(customObject),
@@ -88,6 +93,7 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 		return microerror.Mask(err)
 	}
 	r.logger.Log("debug", key.ClusterID(customObject), "debug", "Organizations", customObject.Spec.Organizations, "ClusterComponent", customObject.Spec.ClusterComponent)
+
 	if !exists {
 		c := vaultrole.CreateConfig{
 			AllowBareDomains: key.AllowBareDomains(customObject),
@@ -97,6 +103,7 @@ func (r *Resource) ensureVaultRole(customObject certificatetpr.CustomObject) err
 			Organizations:    key.Organizations(customObject),
 			TTL:              key.RoleTTL(customObject),
 		}
+		fmt.Printf("c.Organizations %s\n", c.Organizations)
 		err := r.vaultRole.Create(c)
 		if err != nil {
 			return microerror.Mask(err)

@@ -26,7 +26,9 @@ func Test_Resource_VaultCrt_newCreateChange(t *testing.T) {
 		{
 			Obj: &certificatetpr.CustomObject{
 				Spec: certificatetpr.Spec{
-					ClusterID: "foobar",
+					ClusterID:        "foobar",
+					ClusterComponent: "api",
+					Organizations:    []string{"system:masters"},
 				},
 			},
 			CurrentState:   &apiv1.Secret{},
@@ -38,7 +40,9 @@ func Test_Resource_VaultCrt_newCreateChange(t *testing.T) {
 		{
 			Obj: &certificatetpr.CustomObject{
 				Spec: certificatetpr.Spec{
-					ClusterID: "foobar",
+					ClusterID:        "foobar",
+					ClusterComponent: "api",
+					Organizations:    []string{"system:masters"},
 				},
 			},
 			CurrentState: &apiv1.Secret{
@@ -66,7 +70,9 @@ func Test_Resource_VaultCrt_newCreateChange(t *testing.T) {
 		{
 			Obj: &certificatetpr.CustomObject{
 				Spec: certificatetpr.Spec{
-					ClusterID: "foobar",
+					ClusterID:        "foobar",
+					ClusterComponent: "api",
+					Organizations:    []string{"system:masters"},
 				},
 			},
 			CurrentState: nil,
